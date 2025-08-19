@@ -183,36 +183,74 @@
               <input type="hidden" name="id" id="fighterIdInput" />
               <input type="hidden" name="personageId" id="fighterPersonageIdInput" />
               <input type="hidden" name="imgs" id="fighterImgsData" value="[]" />
+              <input type="file" name="imgsInput" id="fighterImgsInput" class="d-none" mul/>
               <div class="row gx-2 gy-2">
                 <div class="col-6 form-floating">
-                  <input class="form-control" type="text" name="name" id="fighterNameInput" placeholder="имя" />
+                  <input class="form-control" type="text" name="name" id="fighterNameInput" placeholder="имя" required />
                   <label for="fighterNameInput">Имя</label>
+                  <div class="valid-feedback">все хорошо</div>
+                  <div class="invalid-feedback">введите имя</div>
                 </div>
                 <div class="col-6">
                   <div class="row gx-1 border rounded border-secondary">
                     <div class="col-5 form-floating">
-                      <input type="number" class="form-control" name="count" id="fighterCountInput" placeholder="count">
+                      <input min="1" type="number" class="form-control" name="count" id="fighterCountInput" placeholder="count" required>
                       <label for="fighterCountInput">count</label>
+                      <div class="valid-feedback border border-success rounded-3 border-bottom-0">все хорошо</div>
+                      <div class="invalid-feedback border border-danger rounded-3 border-bottom-0 ">введите count</div>
                     </div>
                     <div class="col-7 form-floating">
-                      <input type="number" class="form-control" name="count" id="fighterCountInput" placeholder="count">
-                      <label for="fighterCountInput">count on start</label>
+                      <input type="number" class="form-control" name="countOnStart" id="fighterCountOnStartInput" placeholder="count on start" required min="0">
+                      <label for="fighterCountOnStartInput">count on start</label>
+                      <div class="border border-success valid-feedback rounded-3 border-bottom-0">все хорошо</div>
+                      <div class="invalid-feedback border border-danger rounded-3 border-bottom-0">неверно</div>
                     </div>
                   </div>
                 </div>
-                
-                <div class="col form-floating">
-                  <select class="form-select" name="isMain" id="fighterIsMainInput">
-                    <option selected value="true">основной</option>
+                <div class="col-4 form-floating">
+                  <select class="form-select" name="isMain" id="fighterIsMainInput" required>
+                    <option value="true">основной</option>
                     <option value="false">помошник</option>
                   </select>
                   <label for="fighterIsMainInput">тип бойца</label>
                 </div>
-                
+                <div class="col-4 form-floating">
+                  <select name="secondFighterId" id="SecondFighterInput" class="form-select" required>
+                    <option selected value="null">нет</option>
+                    <div id="secodnFighterOption-template">
+                      <option value="{{id}}">{{name}}</option>
+                    </div>
+                  </select>
+                  <label for="SecondFighterInput"> второй облик</label>
+                </div>
+                <div class="col-2 form-floating">
+                  <input min=1 class="form-control" type="number" name="maxHp" id="fighterMaxHpInput" placeholder="max Hp" value="0" required />
+                  <label for="fighterMaxHpInput">max HP</label>
+                </div>
+                <div class="col-2 form-floating">
+                  <input class="form-control" type="number" name="speed" id="fighterSpeedInput" placeholder="speed" min="1" value="0" required />
+                  <label for="fighterSpeedInput">speed</label>
+                </div>
+                <div class="col-12">
+                  <div class="row" style="height: 50px;">
+                    <div id="fighterImgList" class="col-auto row gx-1">
+                      
+                    </div>
+                    <button type="button" class="col-auto btn btn-outline-secondary" id="addFighterImgButton" style="width: 50px; height: 50px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+                        <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5" />
+                        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <input class="d-none" type="number" name="imgsCount" id="fighterImgCountInput" required />
+                  <div class="col-12 invalid-feedback border-top border-danger mx-0" style="">количество изображений не соответсвует количеству бойцов</div>
+                  <div class="valid-feedback border-top border-success">все хорошо</div>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
-              это footer
+              <input class="btn btn-primary" type="submit" name="" id="" value="сохранить" />
             </div>
           </form>
         </div>
@@ -242,7 +280,7 @@
   
   
   
-  
+ <script src="js/selector.js"></script>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"></script> -->
   <!-- <script src="js/mustache.js"></script> -->
   <script src="js/bootstrap.min.js"></script>
@@ -253,6 +291,7 @@
   <script src="js/validation.js"></script>
   <script src="js/confirmModal.js"></script>
   <script src="js/personageModal.js"></script>
+  <script src="js/fighterModal.js"></script>
   <script src="js/main.js"></script>
 </body>
 

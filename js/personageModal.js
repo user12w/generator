@@ -1,4 +1,4 @@
-const btn = document.querySelector("#personageAddImgButton");
+const setPersonageImgSrc = ()=>{const btn = document.querySelector("#personageAddImgButton");
 const fileInput = document.querySelector("#personageImgInput");
 const form = fileInput.form;
 const img = document.querySelector("#personageImg");
@@ -27,7 +27,8 @@ form.addEventListener("reset", event => {
   img.src = "";
   file = null;
 });
-
 function setPersonageImgSrc() {
-  img.src = text.value
+  img.src = text.value;
+}
+return setPersonageImgSrc;
 }

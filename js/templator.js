@@ -1,5 +1,5 @@
-const personageTemplate = document.querySelector("#personage-template").innerHTML;
-const personagesList = document.querySelector("#personages-list")
+const personageTemplate = _("#personage-template").innerHTML;
+const personagesList = _("#personages-list")
 
 class Templator{
   constructor (){

@@ -27,7 +27,7 @@ class Personage {
       }
     }else{
       Templator.addPersonage(id, this.#db.name, img);
-      document.querySelector(`#personage${id}-delete-button`)
+      _(`#personage${id}-delete-button`)
       .addEventListener("click", event => {
         console.log(`#personage${id}-delete-button clicked`)
         confirmModal(event => {
@@ -41,9 +41,9 @@ class Personage {
       });
       personages.add(this);
     }
-    this.#nameElement = document.querySelector(`#personage${id}-name`);
-    this.#personageElement = document.querySelector(`#personage${id}`);
-    this.#imgElement = document.querySelector(`#personage${id}-img`);
+    this.#nameElement = _(`#personage${id}-name`);
+    this.#personageElement = _(`#personage${id}`);
+    this.#imgElement = _(`#personage${id}-img`);
   }
   get name() {
     return this.#db.name;

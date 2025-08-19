@@ -1,14 +1,14 @@
-const personageForm = document.querySelector("#personageForm");
-const personageModal = document.querySelector("#personageModal");
+const personageForm = _("#personageForm");
+const personageModal = _("#personageModal");
 const bsPersonageModal = new bootstrap.Modal(personageModal);
 
-const fighterModal = document.querySelector("#fighterModal");
+const fighterModal = _("#fighterModal");
 const bsFighterModal = new bootstrap.Modal(fighterModal);
 //bsFighterModal.show();
 
 function getPersonageName(id) {
   console.log("getPersonageName" + id);
-  return document.querySelector(`#personage${id}-name`).innerText;
+  return _(`#personage${id}-name`).innerText;
 }
 
 personageModal.addEventListener("show.bs.modal", event => {
