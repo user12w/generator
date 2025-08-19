@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="all" />
+  <!--
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/mustache.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <ul class="nav nav-tabs" id="myTab">
+      <li class="nav-item">
+        <button class="nav-link" id="personages-tab" data-bs-toggle="tab" data-bs-target="#personages-tab-pane" type="button">персонажы</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="maps-tab" data-bs-toggle="tab" data-bs-target="#maps-tab-pane" type="button">карты</button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade" id="personages-tab-pane">
+        <div class="accordion" id="personages-accordion">
+          <div id="personages-list">
+            <div id="personage-template">
+              <div class="accordion-item" id="personage{{id}}">
+                <h2 class="accordion-header row px-0">
+                  
+                  <button class="accordion-button collapsed btn-group-item m-0 p-0 col border rounded-2" type="button" data-bs-toggle="collapse" data-bs-target="#personage{{id}}-accordion">
+                    <img class="btn-group-item d-inline bg-white rounded-2 p-0" style="height: 56px; width: auto;" id="personage{{id}}-img" src="{{img}}" alt="">
+                    <span id="personage{{id}}-name">
+                      {{name}}
+                    </span>
+                  </button>
+                  <div class="btn-group btn-group-item col-auto p-0 bg-white">
+                    <button class="btn btn-group-item btn-danger" id="personage{{id}}-delete-button">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                      </svg>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary btn-group_item" data-bs-target="#personageModal" data-bs-toggle="modal" data-id="{{id}}" data-name="name">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                      </svg>
+                    </button>
+                    
+                  </div>
+                  
+                </h2>
+                <div id="personage{{id}}-accordion" class="accordion-collapse collapse" data-bs-parent="#personages-accordion">
+                  <div class="accordion-body">
+                    <div class="border border-secondary rounded-3 p-1">
+                      <ul class="nav nav-tabs p-1 pb-0">
+                        <li class="nav-item"><button class="nav-link active" type="button" data-bs-toggle="tab" data-bs-target="#personage{{id}}-fighters-list">
+                            бойцы
+                          </button></li>
+                        <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#personage{{id}}-cards-list">
+                            карты
+                          </button></li>
+                        <li class="nav-item"><button class="nav-link" type="button" data-bs-toggle="tab" data-bs-target="#personage{{id}}-tokens-list">
+                            жетоны
+                          </button></li>
+                      </ul>
+                      <div class="tab-content ">
+                        <div class="tab-pane fade active show" id="personage{{id}}-fighters-list">
+                          <div class="list-group m-2" id="personage{{id}}-fighters-list-group">
+                            <div>
+                              <div class="list-group-item">
+                                <div class="row">
+                                  <div class="col-auto align-middle">
+                                    {{name}}
+                                  </div>
+                                  <div class="col-auto mx-auto">
+                                    x{{count}} max Hp: {{maxHp}}
+                                  </div>
+                                  <div class="col-auto m-0 p-0 ms-1">
+                                    <button type="button" class="badge text-bg-primary">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                      </svg></button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <button class="btn btn-outline-primary mb-2" data-personage-id="{{Id}}" data-bs-target="#fighterModal" data-bs-toggle="modal">
+                              добавить бойца
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-content">
+                        <div class="tab-pane fade" id="personage{{id}}-cards-list">
+                          это текст 2
+                        </div>
+                      </div>
+                      <div class="tab-content">
+                        <div class="tab-pane fade" id="personage{{id}}-tokens-list">
+                          это текст 3
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary col-12" data-bs-target="#personageModal" data-bs-toggle="modal">
+            добавить персонажа
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content">
+      <div class="tab-pane fade" id="maps-tab-pane">это просто текст</div>
+    </div>
+  </div>
+  <div id="modals-list">
+    <div class="modal fade" id="personageModal" data-bs-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="needs-validate" id="personageForm" action="#" novalidate>
+            <div class="modal-header">
+              <h1 class="modal-title fs-5">создать персонажа</h1>
+              <button type="reset" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" name="id">
+              <input type="file" class="d-none" name="img" id="personageImgInput" />
+              <div class="row pb-3 px-1">
+                
+                <div class="col p-0">
+                  <div class="form-floating">
+                    <input type="text" name="name" id="personageNameInput" placeholder="hello" minlength="1" class="form-control" required>
+                    <label for="personageNameInput">
+                      Имя
+                    </label>
+                    <div class="invalid-feedback">
+                      Введите имя персонажа</div>
+                  </div>
+                  <div>
+                    <input class="btn col-12 btn-secondary" type="button" value="изображение" id="personageAddImgButton">
+                    <input type="text" class="d-none" name="textImg" id="personageTextImg" required />
+                    <div class="invalid-feedback border-top border-danger">Добавьте изображение</div>
+                    
+                  </div>
+                </div>
+                <img class="p-0" style="height: 94px; width: auto;" id="personageImg" src="" alt="">
+                
+              </div>
+              <div class="row border-top pt-3 border-1">
+                <div class="col-auto ms-auto">
+                  <button type="reset" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">отмена</button>
+                  <button type="submit" class="btn btn-primary ms-2">
+                    сохранить
+                  </button>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        </form>
+      </div>
+    </div>
+    
+    
+    
+    
+    <div class="modal fade" id="fighterModal" data-bs-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="needs-validate" action="#" id="fighterForm" novalidate>
+            <div class="modal-header">
+              <h1 class="modal-title">Редактор Бойца</h1>
+              <button type="reset" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" name="id" id="fighterIdInput" />
+              <input type="hidden" name="personageId" id="fighterPersonageIdInput" />
+              <input type="hidden" name="imgs" id="fighterImgsData" value="[]" />
+              <div class="row gx-2 gy-2">
+                <div class="col-6 form-floating">
+                  <input class="form-control" type="text" name="name" id="fighterNameInput" placeholder="имя" />
+                  <label for="fighterNameInput">Имя</label>
+                </div>
+                <div class="col-6">
+                  <div class="row gx-1 border rounded border-secondary">
+                    <div class="col-5 form-floating">
+                      <input type="number" class="form-control" name="count" id="fighterCountInput" placeholder="count">
+                      <label for="fighterCountInput">count</label>
+                    </div>
+                    <div class="col-7 form-floating">
+                      <input type="number" class="form-control" name="count" id="fighterCountInput" placeholder="count">
+                      <label for="fighterCountInput">count on start</label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col form-floating">
+                  <select class="form-select" name="isMain" id="fighterIsMainInput">
+                    <option selected value="true">основной</option>
+                    <option value="false">помошник</option>
+                  </select>
+                  <label for="fighterIsMainInput">тип бойца</label>
+                </div>
+                
+              </div>
+            </div>
+            <div class="modal-footer">
+              это footer
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="confirmModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="confirmModalTitle"></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="confirmModalBody">
+            
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+            <button class="btn" id="confirmModalButton" data-bs-dismiss="modal">
+              Подтвердить
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.2.0/mustache.min.js"></script> -->
+  <!-- <script src="js/mustache.js"></script> -->
+  <script src="js/bootstrap.min.js"></script>
+  <!--  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script> -->
+  <script src="js/templator.js"></script>
+  <script src="js/personage.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/confirmModal.js"></script>
+  <script src="js/personageModal.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
