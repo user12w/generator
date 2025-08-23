@@ -5,7 +5,6 @@ const bsPersonageModal = new bootstrap.Modal(personageModal);
 const fighterModal = _("#fighterModal");
 const bsFighterModal = new bootstrap.Modal(fighterModal);
 //bsFighterModal.show();
-
 function getPersonageName(id) {
   console.log("getPersonageName" + id);
   return _(`#personage${id}-name`).innerText;
