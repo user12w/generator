@@ -6,7 +6,7 @@ let fighters = {
   remove: function(id) {
     this.list[id] = undefined;
   }
-};
+}
 class Fighter {
   #db = {
     id,
@@ -35,7 +35,7 @@ class Fighter {
       name: name,
       count: count,
       countOnStart: countOnStart,
-      isMain: Boolean(isMain),
+      isMain: (isMain=="true" || Boolean(isMain)==true),
       secondFighterId: secondFighterId,
       maxHp: maxHp,
       speed: speed,
@@ -51,7 +51,7 @@ class Fighter {
     }
   }
   set secondFighterId(id){
-    if(this.#secondFighterId && id){
+    if(this.secondFighterId && id){
       this.secondFighter.secondFighter = null
     }
     this.#db.secondFighterId = id;
@@ -60,15 +60,44 @@ class Fighter {
     }
   }
   get secondFighter(){
-    return fighters.get(this.#secondFighterId);
+    return fighters.get(this.#db.secondFighterId);
   }
   get id(){
-    return this.#id
+    return this.#db.id
   }
   get secondFighterId(){
-    return this.#secondFighterId;
+    return this.#db.secondFighterId;
   }
   get db(){
+    return {...this.#db};
+  }
+  set db({
+    id,
+    name,
+    count,
+    countOnStart,
+    isMain,
+    secondFighterId,
+    maxHp,
+    speed,
+    imgs
+  } ){
+    console.log(`fighter update`)
     
+    this.#db = {
+      id: this.id,
+      name: name || this.db.name,
+      count: count || this.db.count,
+      countOnStart: countOnStart || this.db.countOnStart,
+      isMain: isMain || this.db.isMain,
+      secondFighterId: this.secondFighterId,
+      maxHp: maxHp || this.db.maxHp,
+      speed: speed || this.db.speed,
+      imgs: imgs || this.imgs
+    };
+    console.log(this.#db)
+    if (countOnStart > count) {
+      throw new Error(`countOnStrat > count __zzzzzzzz11zzz__z`)
+    }
   }
 }
