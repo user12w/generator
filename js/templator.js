@@ -6,32 +6,28 @@ var temp;
   class Templator {
     #personageTemplate;
     #fighterTemplate;
+    #personagePromise;
     constructor() {
-      fetch("templates/personageTemplate.txt")
-      .then(e => {
-        e.text()
-        .then(q => {
-             this.#personageTemplate = q;
-        })
-     
-      });
-      fetch("templates/fighterTemplate.txt")
-      .then(e => {
-        e.text()
-        .then(q => {
-             this.#fighterTemplate = q;
-        })
-     
-      });
- /*     while (!(this.#fighterTemplate && this.#personageTemplate)) {
-        // Tab to edit
-      }*/
+      this.#personagePromise = this.#personageInit();
+      this.#fighterInit()
     }
-    addPersonage(id, name, img) {
+    async #personageInit(){
+      let e = await fetch("templates/personageTemplate.mustache")
+      let text= await e.text()
+      this.#personageTemplate = text;
+    
+    }
+    async #fighterInit() {
+      let e = await fetch("templates/fighterTemplate.mustache");
+      let text = await e.text()
+      this.#fighterTemplate = text
+    //  while (!this.#personageTemplate) {
+    //     // Tab to edit
+    //   }
+    }
+    async addPersonage(id, name, img) {
       console.log(`Templator.addPrsonage${id}  ${name}`)
-      while (!this.#personageTemplate) {
-        // Tab to edit
-      }
+      await this.#personagePromise;
       const render = mustache.render(this.#personageTemplate, {
         id: id,
         name: name,
@@ -40,6 +36,7 @@ var temp;
       let e = document.createElement("div");
       personagesList.appendChild(e);
       e.outerHTML = render;
+
       
     }
     addFighter(id, name, count, maxHp, imgs, element){

@@ -9,6 +9,9 @@ class Personage {
     img: null
   };
   constructor(id, name, img) {
+    this.init(id, name, img)
+  }
+  async init(id, name, img){
     console.log(`new personage ${id} ${name}`)
     this.#db.name = name;
     this.#db.id = id;
@@ -26,7 +29,7 @@ class Personage {
         this.db.img = personages[id].img;
       }
     }else{
-      Templator.addPersonage(id, this.#db.name, img);
+      await Templator.addPersonage(id, this.#db.name, img);
       _(`#personage${id}-delete-button`)
       .addEventListener("click", event => {
         console.log(`#personage${id}-delete-button clicked`)
