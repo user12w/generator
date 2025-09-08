@@ -1,3 +1,4 @@
+console.log("personage.js");
 
 class Personage {
   #nameElement;
@@ -8,6 +9,7 @@ class Personage {
     name: null,
     img: null
   };
+  #fighters = [];
   constructor(id, name, img) {
     this.init(id, name, img)
   }
@@ -74,5 +76,14 @@ class Personage {
   }
   get db(){
     return this.#db
+  }
+  get fighters(){
+    return this.#fighters;
+  }
+  addFighter(fighter){
+    this.#fighters.push(fighter);
+  }
+  get fightersList(){
+    return _(`#personage${this.id}-fighters-list`);
   }
 }

@@ -38,12 +38,11 @@
             </button></li>
         </ul>
         <div class="tab-content ">
-          <div class="tab-pane fade active show" id="personage{{id}}-fighters-list">
+          <div class="tab-pane fade active show">
             <div class="list-group m-2" id="personage{{id}}-fighters-list-group">
-              <div>
-                
-              </div>
-              <button class="btn btn-outline-primary mb-2" data-personage-id="{{Id}}" data-bs-target="#fighterModal" data-bs-toggle="modal" data-personageId="{{id}}">
+              <div id="personage{{id}}-fighters-list" class="rounded-2"></div>
+              
+              <button class="btn btn-outline-primary mb-2" data-personage-id="{{id}}" data-bs-target="#fighterModal" data-bs-toggle="modal" data-personageId="{{id}}">
                 добавить бойца
               </button>
             </div>
