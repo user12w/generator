@@ -68,14 +68,14 @@ console.log("figghterModal.js");
           e[key].value = element;
         }
       }
-    {
-      const imgs = data.imgs;
-      e.imgs.value = JSON.stringify(imgs);
-      imgCount.value = imgs.length;
-      imgs.forEach(element => {
-        addImg(element);
-      });
-    }
+      {
+        const imgs = data.imgs;
+        e.imgs.value = JSON.stringify(imgs);
+        imgCount.value = imgs.length;
+        imgs.forEach(element => {
+          addImg(element);
+        });
+      }
     } else {
       personageId.value = button.dataset.personageId;
       id = Math.floor((Date.now() + Math.random()) * 10000)
@@ -92,7 +92,7 @@ console.log("figghterModal.js");
       o[element.name] = element.value;
     }
     console.log(o.imgs);
-    
+
     o.imgs = JSON.parse(o.imgs);
     console.log(o);
     // console.log(new Fighter(o));

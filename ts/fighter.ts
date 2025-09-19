@@ -8,7 +8,7 @@ let fighters = {
   remove: function (id) {
     this.list[id] = undefined;
   },
-  get: function(id) {
+  get: function (id) {
     return this.list[id];
   }
 }
@@ -16,7 +16,7 @@ class Fighter {
   #db = {
     id: undefined,
     name: undefined,
-    count : undefined,
+    count: undefined,
     countOnStart: undefined,
     isMain: undefined,
     secondFighterId: undefined,
@@ -51,7 +51,7 @@ class Fighter {
     };
     console.log("new fighter");
     console.log(this.#db);
-    
+
     if (fighters.get(id)) {
       throw new Error(`cannon create fighter with id: ${id}`);
     }
@@ -115,8 +115,8 @@ class Fighter {
       secondFighterId: this.secondFighterId,
       maxHp: maxHp || this.db.maxHp,
       speed: speed || this.db.speed,
-      imgs: imgs || this.imgs,
-      personageId: personageId || this.#db.personageId
+      imgs: imgs || this.db.imgs,
+      personageId: personageId || this.db.personageId
     };
     console.log(this.#db)
     if (countOnStart > count) {

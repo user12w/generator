@@ -1,20 +1,20 @@
-const personageForm = _("#personageForm");
-const personageModal = _("#personageModal"); 
+const personageForm: HTMLFormElement = _("#personageForm");
+const personageModal = _("#personageModal");
 const bsPersonageModal = new bootstrap.Modal(personageModal);
 
 //bsFighterModal.show();
 function getPersonageName(id) {
   console.log("getPersonageName" + id);
-  return _(`#personage${id}-name`).innerText;
+  return _(`#personage${id}-name`).textContent;
 }
 
 personageModal.addEventListener("show.bs.modal", event => {
   console.log("personageModal.show.bs.modal")
   const button = event.relatedTarget;
- let id = button.dataset.id;
+  let id = button.dataset.id;
   const nameElement = personageForm.elements["name"];
   const textImg = personageForm.elements["textImg"]
-  
+
   if (!id) {
     id = Math.floor((Date.now() + Math.random()) * 10000);
   } else {
@@ -25,21 +25,21 @@ personageModal.addEventListener("show.bs.modal", event => {
     setPersonageImgSrc()
     nameElement.dispatchEvent(new Event('input'));
   }
-  personageForm.elements["id"].value = id 
-  
-  
-  
-  
-  
+  personageForm.elements["id"].value = id
+
+
+
+
+
 });
 personageForm.addEventListener("submit", event => {
   console.log("personageForm.submit")
   event.preventDefault()
   const id = personageForm.elements["id"].value;
   const name = personageForm.elements["name"].value;
-  const img =personageForm.elements["textImg"].value;
+  const img = personageForm.elements["textImg"].value;
   let personage = personages.get(id);
-  
+
   if (personage) {
     personage.name = name;
     personage.img = img;

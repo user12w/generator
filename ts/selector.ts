@@ -1,3 +1,3 @@
-function _(selector) {
-  return document.querySelector(selector)
+function _(selector: string) {
+  return (document.querySelector(selector) as any);
 }

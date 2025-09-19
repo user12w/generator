@@ -1,61 +1,64 @@
-var temp;
-{
-  const personageTemplate = _("#personage-template").innerHTML;
-  const personagesList = _("#personages-list")
-  
-  class Templator {
-    #personageTemplate;
-    #fighterTemplate;
-    #personagePromise;
-    constructor() {
-      this.#personagePromise = this.#personageInit();
-      this.#fighterInit()
-    }
-    async #personageInit(){
-      let e = await fetch("templates/personageTemplate.mustache")
-      let text= await e.text()
-      this.#personageTemplate = text;
-    
-    }
-    async #fighterInit() {
-      let e = await fetch("templates/fighterTemplate.mustache");
-      let text = await e.text()
-      this.#fighterTemplate = text
-    //  while (!this.#personageTemplate) {
-    //     // Tab to edit
-    //   }
-    }
-    async addPersonage(id, name, img) {
-      console.log(`Templator.addPrsonage${id}  ${name}`)
-      await this.#personagePromise;
-      const render = mustache.render(this.#personageTemplate, {
-        id: id,
-        name: name,
-        img: img
-      });
-      let e = document.createElement("div");
-      personagesList.appendChild(e);
-      e.outerHTML = render;
-
-      
-    }
-    addFighter(id, name, count, maxHp, imgs, element){
-      console.log(`Templator.addFighter(${id} ${name} ${count} ${maxHp} ${imgs[0]})`);
-      while (!this.#fighterTemplate) {
-        // Tab to edit
-      }
-      const render = mustache.render(this.#fighterTemplate, {
-        id:id,
-        name:name,
-        count:count,
-        maxHp:maxHp,
-        img:imgs[0]
-      });
-      let e = document.createElement("div");
-      element.appendChild(e);
-      e.outerHTML = render;
-    }
+// var temp;
+namespace Templator {
+  // const personageTemplate = _("personage-template").innerHTML;
+  const personagesList = _("#personages-list");
+  let fighterTemplate: string;
+  let personageTemplate: string;
+  let personagePromise: Promise<void>;
+  let fighterImageTemplate: string;
+  let fighterPromise: Promise<void>;
+  let fighterImagePromise: Promise<void>;
+  export function init() {
+    personagePromise = personageInit();
+    fighterInit();
+    fighterImageInit();
   }
-  temp = new Templator();
+  async function personageInit() {
+    let e = await fetch("templates/personageTemplate.mustache")
+    let text = await e.text()
+    personageTemplate = text;
+  }
+  async function fighterInit() {
+    let e = await fetch("templates/fighterTemplate.mustache");
+    let text = await e.text()
+    fighterTemplate = text
+  }
+  async function fighterImageInit() {
+    let e = await fetch("templates/fighterImageTemplate.mustache");
+    let text: string = await e.text();
+    fighterImageTemplate = text;
+  }
+  export async function addPersonage(id: number, name: string, img: string) {
+    console.log(`Templator.addPrsonage${id}  ${name}`)
+    await personagePromise;
+    const render = mustache.render(personageTemplate, {
+      id: id,
+      name: name,
+      img: img
+    });
+    let e = document.createElement("div");
+
+    personagesList.appendChild(e);
+    e.outerHTML = render;
+
+
+  }
+  export async function addFighter(id: number, name: string, count: number, maxHp: number, imgs: string[], element: Element) {
+    console.log(`Templator.addFighter(${id} ${name} ${count} ${maxHp} ${imgs[0]})`);
+    await fighterPromise;
+    const render = mustache.render(fighterTemplate, {
+      id: id,
+      name: name,
+      count: count,
+      maxHp: maxHp,
+      img: imgs[0]
+    });
+    let e = document.createElement("div");
+    element.appendChild(e);
+    e.outerHTML = render;
+  }
+  // temp = new Templator();
 }
-const Templator = temp;
+
+// const Templator = temp;
+Templator.init()
