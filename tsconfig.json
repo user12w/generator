@@ -4,10 +4,10 @@
     "noImplicitAny": false,
     "removeComments": true,
     "sourceMap": true,
-    "outDir": "js",
+    "outDir": "app/js",
     "target": "es2020"
   },
   "include": [
-    "ts/*.ts"
-, "ts/bootstrap.esm.min.js"  ]
+    "app/ts/*.ts"
+, "app/ts/bootstrap.min.js"  ]
 }
