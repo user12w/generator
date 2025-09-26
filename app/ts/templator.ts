@@ -10,8 +10,8 @@ namespace Templator {
   let fighterImagePromise: Promise<void>;
   export function init() {
     personagePromise = personageInit();
-    fighterInit();
-    fighterImageInit();
+    fighterPromise = fighterInit();
+    fighterImagePromise = fighterImageInit();
   }
   async function personageInit() {
     let e = await fetch("templates/personageTemplate.mustache")
@@ -57,7 +57,19 @@ namespace Templator {
     element.appendChild(e);
     e.outerHTML = render;
   }
-  // temp = new Templator();
+  export async function addfighterImage(data: {src: string, id: number}, element: HTMLElement, ondelete: (event: PointerEvent) => void) {
+    console.log(`Templator.addfighterImage(, src=...)`)
+    await fighterImagePromise;
+    const reader: string = mustache.render(fighterImageTemplate,  data);
+    let e = document.createElement("div");
+    element.appendChild(e);
+    e.outerHTML = reader;
+    let e2 = (_(`#fighterImage${data.id} .delete-button`) as HTMLButtonElement);
+    e2.addEventListener("click", event => {
+      e2.parentElement.outerHTML= "";
+      ondelete(event);
+    });
+  }
 }
 
 // const Templator = temp;

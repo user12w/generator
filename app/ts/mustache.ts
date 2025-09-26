@@ -543,7 +543,7 @@ Writer.prototype.parse = function parse (template, tags) {
  * If an `escape` function is not provided, then an HTML-safe string
  * escaping function is used as the default.
  */
-Writer.prototype.render = function render (template, view, partials, config) {
+Writer.prototype.render = function render (template: string, view, partials, config) {
   var tags = this.getConfigTags(config);
   var tokens = this.parse(template, tags);
   var context = (view instanceof Context) ? view : new Context(view, undefined);
@@ -742,7 +742,7 @@ mustache.parse = function parse (template, tags) {
  * Renders the `template` with the given `view`, `partials`, and `config`
  * using the default writer.
  */
-mustache.render = function render (template, view, partials, config) {
+mustache.render = function render (template: string, view, partials, config) {
   if (typeof template !== 'string') {
     throw new TypeError('Invalid template! Template should be a "string" ' +
                         'but "' + typeStr(template) + '" was given as the first ' +

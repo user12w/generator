@@ -1,67 +1,71 @@
-const dbName = "myDB";
-const request = indexedDB.open(dbName, 1);
-request.onupgradeneeded = e => {
-  const db = (e as any).target.result;
-  const personagesStore = db.createObjectStore("personages", {
-    keyPath: "id"
+namespace DB {
 
-  });
-};
-request.onerror = event => {
-  console.log((event as any).target.error?.message);
-};
-let isDbReady = false;
-let DB;
+  const Dbs: Array<string> = ["personages", "fighters"];
+  enum DB {
+    personages = "personages",
+    fighter = "fighters"
+  }
+  const dbName = "generatorDb";
+  const dbVersion = 1;
 
+  export interface Element {
+    id: number;
+    db: any;
+  }
+  class Db<T extends Element> {
+    #list: Map<number, any> = new Map<number, T>();
+    readonly #name: string;
+    static db: IDBDatabase;
+    T: { newFromDb: (db: any) => T };
 
-var personages = (function () {
-  class Manager {
-    #list = {};
-    constructor() {
+    constructor(name: DB, T: { newFromDb: (db: any) => T }) {
+      this.#name = name;
+      this.T = T;
     }
-    async add(personage: Personage) {
-      if (this.get(personage.id)) {
-        await this.updatePersonage(personage.id);
+    async add(element: T) {
+      if (this.get(element.id)) {
+        await this.updateElement(element.id);
       } else {
-        console.log(`start adding personage ${personage.id}`);
-        console.log(personage);
+        console.log(`start adding ${this.#name} ${element.id}`);
         this.#readwrite
-          .put(personage.db)
+          .put(element.db)
           .onsuccess = event => {
-            console.log(`personage ${personage.id} added`)
+            console.log(`${this.#name} ${element.id} added`)
           };
-        this.#list[personage.id] = personage;
+        this.#list[element.id] = element;
       }
     }
-    get(id: number): Personage {
+    get list(){
+      return this.#list;
+    }
+    get(id: number): T {
       return this.#list[id]
     }
-    get #readwrite() {
+    get #readwrite(): IDBObjectStore {
       return this.#objectStore("readwrite");
     }
-    get #read() {
-      return this.#objectStore(undefined)
+    get #read(): IDBObjectStore {
+      return this.#objectStore()
     }
-    #objectStore(type) {
-      return DB.transaction("personages", type)
-        .objectStore("personages")
+    #objectStore(type?): IDBObjectStore {
+      return Db.db.transaction(this.#name, type)
+        .objectStore(this.#name)
     }
-    async updatePersonage(id?: number) {
-      const personage = this.get(id);
-      console.log(`personage ${personage} update started`);
-      console.log(personage);
+    async updateElement(id: number) {
+      const element = this.get(id);
+      console.log(`${this.#name} ${element} update started`);
       this.#readwrite
-        .put(personage.db)
+        .put(element.db)
         .onsuccess = event => {
-          console.log(`personage ${id} updated`)
+          console.log(`${this.#name} ${id} updated`)
         };
     }
     async loadList() {
-      console.log("personages load list started")
+      console.log(`${this.#name}s load list started`)
       this.#read.getAll().onsuccess = e => {
-        const data: Personage[] = e.target.result;
-        data.forEach((p: Personage) => {
-          new Personage(p.id, p.name, p.img);
+        const data: any[] = (e.target as any).result;
+        data.forEach((p: any) => {
+          this.T.newFromDb(p);
         })
       }
     }
@@ -74,16 +78,33 @@ var personages = (function () {
           console.log(`personage ${id} deleted`);
         };
     }
-  }
-  const manager = new Manager();
-  return manager;
-})();
 
-request.onsuccess = event => {
-  DB = (event as any).target.result;
-  DB.onerror = event => {
-    console.error(`myDB error: ${event.target.error?.message}`)
+  }
+
+  export let personages = new Db<Personage>(DB.personages, Personage);
+  export let fighters = new Db<Fighter>(DB.fighter, Fighter);
+
+  const request = indexedDB.open(dbName, dbVersion);
+  request.onupgradeneeded = e => {
+    const db = (e.target as IDBRequest<IDBDatabase>).result;
+    Dbs.forEach(element => {
+      db.createObjectStore(element, {
+        keyPath: "id"
+      });
+    });
   };
-  isDbReady = true;
-  personages.loadList()
-};
+  request.onerror = event => {
+    console.log((event as any).target.error?.message);
+  };
+  request.onsuccess =async (event) => {
+    let DB = (event as any).target.result;
+    DB.onerror = event => {
+      console.error(`myDB error: ${event.target.error?.message}`)
+    };
+    Db.db = DB
+    await personages.loadList();
+    await fighters.loadList();
+  };
+}
+const personages = DB.personages;
+const fighters = DB.fighters;

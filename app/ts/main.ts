@@ -16,7 +16,7 @@ personageModal.addEventListener("show.bs.modal", event => {
   const textImg = personageForm.elements["textImg"]
 
   if (!id) {
-    id = Math.floor((Date.now() + Math.random()) * 10000);
+    id = generateId();
   } else {
     const name = personages.get(id).name;
     console.log(name);

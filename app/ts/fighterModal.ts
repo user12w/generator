@@ -15,7 +15,7 @@ console.log("figghterModal.js");
   const imgs = e["imgs"];
   const fileInput = e["imgsInput"];
   const fighterId = e["id"];
-  count.addEventListener("input", event => {
+  count.addEventListener("input", (event) => {
     const v = count.value
     countOnStart.max = v;
     imgCount.min = v;
@@ -27,25 +27,23 @@ console.log("figghterModal.js");
   addImgButton.addEventListener("click", event => {
     fileInput.click();
   });
-  function addImg(src) {
-    let element = document.createElement("img");
-    element.style.height = "50px";
-    element.style.width = "50px";
-    element.style.padding = "0px"
-    element.classList.add("rounded-2", "col-auto", "border");
-    element.src = src;
-    imgList.appendChild(element);
-    const data = JSON.parse(imgs.value);
-    data.push(src);
-    imgs.value = JSON.stringify(data)
+  function addImg(src: string) {
+    imgCount.value = Number(imgCount.value) + 1
+    let data = JSON.parse(imgs.value);
+    const id = generateId();
+    data[id] = src;
+    imgs.value = JSON.stringify(data);
+    let element = Templator.addfighterImage({src: src, id: id}, imgList, (event) => {
+      data[id] = undefined;
+      imgCount.value = Number(imgCount.value) - 1
+    });
   }
   fileInput.addEventListener("change", event => {
     const files = fileInput.files;
     for (const file of files) {
-      imgCount.value = Number(imgCount.value) + 1
       const reader = new FileReader();
       reader.onload = e => {
-        addImg(e.target.result);
+        addImg(String(e.target.result));
       };
       reader.readAsDataURL(file)
     }
@@ -53,7 +51,7 @@ console.log("figghterModal.js");
   modal.addEventListener("show.bs.modal", event => {
     console.log("fighterModal.show.bs.modal");
     const button = event.relatedTarget;
-    let id = button.dataset.id;
+    const id = button.dataset.id;
     if (id) {
       const fighter = fighters.get(id);
       if (!fighter) {
@@ -62,25 +60,29 @@ console.log("figghterModal.js");
       const data = fighter.db;
       for (const key in data) {
         console.log(`data[${key}] = ${data[key]}`);
-
-        if (Object.prototype.hasOwnProperty.call(data, key)) {
+        try {
           const element = data[key];
           e[key].value = element;
+          e[key].focus();
+          e[key].blur();
+          
+        } catch (error) {
+          console.error(error);
+          
         }
       }
       {
         const imgs = data.imgs;
         e.imgs.value = JSON.stringify(imgs);
-        imgCount.value = imgs.length;
         imgs.forEach(element => {
           addImg(element);
         });
       }
+      fighterId.value = id
     } else {
       personageId.value = button.dataset.personageId;
-      id = Math.floor((Date.now() + Math.random()) * 10000)
+      fighterId.value = generateId()
     }
-    fighterId.value = id
   });
   form.addEventListener("submit", event => {
     event.preventDefault();
@@ -93,7 +95,16 @@ console.log("figghterModal.js");
     }
     console.log(o.imgs);
 
-    o.imgs = JSON.parse(o.imgs);
+    let imgs = JSON.parse(o.imgs);
+    let imgs2=[];
+    for (const key in imgs) {
+      if (Object.prototype.hasOwnProperty.call(imgs, key)) {
+        const element = imgs[key];
+        imgs2.push(element);
+      }
+    }
+    o.imgs=imgs2;
+
     console.log(o);
     // console.log(new Fighter(o));
     const fighter = new Fighter(o);

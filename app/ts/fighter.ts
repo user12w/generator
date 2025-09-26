@@ -1,78 +1,83 @@
 console.log("fighter.js");
 
-let fighters = {
-  list: {},
-  add: function (fighter) {
-    this.list[fighter.id] = (fighter);
-  },
-  remove: function (id) {
-    this.list[id] = undefined;
-  },
-  get: function (id) {
-    return this.list[id];
-  }
+// let fighters = {
+//   list: {},
+//   add: function (fighter: Fighter) {
+//     this.list[fighter.id] = (fighter);
+//   },
+//   remove: function (id: number) {
+//     this.list[id] = undefined;
+//   },
+//   get: function (id: number): Fighter {
+//     return this.list[id];
+//   }
+// }
+class fighterDb {
+  constructor(
+    public id: number,
+    public name: string,
+    public count: number,
+    public countOnStart: number,
+    public isMain: boolean | string,
+    public secondFighterId: number,
+    public maxHp: number,
+    public speed: number,
+    public imgs: Array<string>,
+    public personageId: number) { }
 }
-class Fighter {
-  #db = {
-    id: undefined,
-    name: undefined,
-    count: undefined,
-    countOnStart: undefined,
-    isMain: undefined,
-    secondFighterId: undefined,
-    maxHp: undefined,
-    speed: undefined,
-    imgs: undefined,
-    personageId: undefined
-  };
-  constructor({
-    id,
-    name,
-    count,
-    countOnStart,
-    isMain,
-    secondFighterId,
-    maxHp,
-    speed,
-    imgs,
-    personageId
-  }) {
+class Fighter implements DB.Element{
+  #db: fighterDb;
+  // {
+  //   id: undefined,
+  //   name: undefined,
+  //   count: undefined,
+  //   countOnStart: undefined,
+  //   isMain: undefined,
+  //   secondFighterId: undefined,
+  //   maxHp: undefined,
+  //   speed: undefined,
+  //   imgs: undefined,
+  //   personageId: undefined
+  // };
+  constructor(data: fighterDb) {
     this.#db = {
-      id: id,
-      name: name,
-      count: count,
-      countOnStart: countOnStart,
-      isMain: (isMain == "true" || Boolean(isMain) == true),
-      secondFighterId: secondFighterId,
-      maxHp: maxHp,
-      speed: speed,
-      imgs: imgs,
-      personageId: personageId
-    };
+      id: data.id,
+      name: data.name,
+      count: data.count,
+      countOnStart: data.countOnStart,
+      isMain: data.isMain,
+      secondFighterId: data.secondFighterId,
+      maxHp: data.maxHp,
+      speed: data.speed,
+      imgs: data.imgs,
+      personageId: data.personageId
+    }
+    this.#db.isMain = this.#db.isMain == "true" || this.#db.isMain;
     console.log("new fighter");
     console.log(this.#db);
 
-    if (fighters.get(id)) {
-      throw new Error(`cannon create fighter with id: ${id}`);
+    if (fighters.get(data.id)) {
+      throw new Error(`cannon create fighter with id: ${data.id}`);
     }
-    const personage = personages.get(personageId);
+    const personage = personages.get(data.personageId);
     if (!personage) {
-      throw new Error(`no personage with id ${personageId}`);
+      throw new Error(`no personage with id ${data.personageId}`);
     }
     personage.addFighter(this);
 
-    const secondFighter = fighters.get(secondFighterId);
+    const secondFighter = fighters.get(data.secondFighterId);
     if (secondFighter) {
       secondFighter.secondFighterId = this.id
     }
-    Templator.addFighter(id, name, count, maxHp, imgs, personage.fightersList);
+    Templator.addFighter(data.id, data.name, data.count, data.maxHp, data.imgs, personage.fightersList);
     fighters.add(this);
   }
-
-
+  static newFromDb(db: fighterDb){
+    return new Fighter(db);
+  }
   set secondFighterId(id) {
     if (this.secondFighterId && id) {
-      this.secondFighter.secondFighter = null;
+      this.secondFighter.secondFighterId = null;
     }
     this.#db.secondFighterId = id;
     if (this.secondFighter.secondFighterId != this.id) {
@@ -92,35 +97,28 @@ class Fighter {
   get db() {
     return { ...this.#db };
   }
-  set db({
-    id,
-    name,
-    count,
-    countOnStart,
-    isMain,
-    secondFighterId,
-    maxHp,
-    speed,
-    imgs,
-    personageId
-  }) {
+  set db(data: fighterDb) {
     console.log(`fighter update`)
+    if (this.id != data.id) {
+      throw new Error(`${this.id} != ${data.id}`);
+    }
 
-    this.#db = {
-      id: this.id,
-      name: name || this.db.name,
-      count: count || this.db.count,
-      countOnStart: countOnStart || this.db.countOnStart,
-      isMain: isMain || this.db.isMain,
-      secondFighterId: this.secondFighterId,
-      maxHp: maxHp || this.db.maxHp,
-      speed: speed || this.db.speed,
-      imgs: imgs || this.db.imgs,
-      personageId: personageId || this.db.personageId
-    };
+    this.secondFighterId = data.secondFighterId;
+    this.#db.id = data.id
+    this.#db.name = data.name
+    this.#db.count = data.count
+    this.#db.countOnStart = data.countOnStart
+    this.#db.isMain = data.isMain
+    this.#db.secondFighterId = data.secondFighterId
+    this.#db.maxHp = data.maxHp
+    this.#db.speed = data.speed
+    this.#db.imgs = data.imgs
+    this.#db.personageId = data.personageId
+    this.#db.isMain = this.#db.isMain == "true" || this.#db.isMain;
+    
     console.log(this.#db)
-    if (countOnStart > count) {
-      throw new Error(`countOnStrat > count __zzzzzzzz11zzz__z`)
+    if (data.countOnStart > data.count) {
+      throw new Error(`countOnStrat > count`)
     }
   }
 }

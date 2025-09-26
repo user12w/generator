@@ -1,9 +1,9 @@
 console.log("personage.js");
 
 class Personage {
-  #nameElement;
-  #personageElement;
-  #imgElement;
+  #nameElement: HTMLElement;
+  #personageElement: HTMLElement;
+  #imgElement: HTMLImageElement;
   #db: {
     name: string,
     id: number,
@@ -13,9 +13,13 @@ class Personage {
     id: undefined,
     img: undefined
   };
+
   #fighters = [];
   constructor(id: number, name: string, img: string) {
     this.init(id, name, img)
+  }
+  static newFromDb(db){
+    return new Personage(db.id, db.name, db.img);
   }
   async init(id: number, name: string, img: string) {
     console.log(`new personage ${id} ${name}`)
@@ -60,7 +64,7 @@ class Personage {
   set name(v) {
     this.#db.name = v;
     this.#nameElement.innerText = v;
-    personages.updatePersonage();
+    personages.updateElement(this.id);
   }
   get img() {
     return this.db.img;
@@ -68,7 +72,7 @@ class Personage {
   set img(v) {
     this.db.img = v;
     this.#imgElement.src = v;
-    personages.updatePersonage(this.id)
+    personages.updateElement(this.id)
   }
   del() {
     this.#personageElement.remove();
