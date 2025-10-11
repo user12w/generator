@@ -1,6 +1,6 @@
 console.log("personage.js");
 
-class Personage {
+class Personage implements DB.Element {
   #nameElement: HTMLElement;
   #personageElement: HTMLElement;
   #imgElement: HTMLImageElement;
@@ -13,13 +13,13 @@ class Personage {
     id: undefined,
     img: undefined
   };
-
+  inited: Promise<void>;
   #fighters = [];
   constructor(id: number, name: string, img: string) {
-    this.init(id, name, img)
+    this.inited = this.init(id, name, img)
   }
-  static newFromDb(db){
-    return new Personage(db.id, db.name, db.img);
+  static newFromDb(db: {id: number, name:string, img:string}){
+    return new Personage(Number(db.id), db.name, db.img);
   }
   async init(id: number, name: string, img: string) {
     console.log(`new personage ${id} ${name}`)

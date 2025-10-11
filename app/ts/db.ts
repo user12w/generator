@@ -10,7 +10,8 @@ namespace DB {
 
   export interface Element {
     id: number;
-    db: any;
+    db: {id: number};
+    inited: Promise<void>;
   }
   class Db<T extends Element> {
     #list: Map<number, any> = new Map<number, T>();
@@ -27,19 +28,21 @@ namespace DB {
         await this.updateElement(element.id);
       } else {
         console.log(`start adding ${this.#name} ${element.id}`);
+        let db = element.db;
+        db.id = Number(element.id)
         this.#readwrite
-          .put(element.db)
+          .put(db)
           .onsuccess = event => {
             console.log(`${this.#name} ${element.id} added`)
           };
-        this.#list[element.id] = element;
+        this.#list.set(element.id, element);
       }
     }
     get list(){
       return this.#list;
     }
     get(id: number): T {
-      return this.#list[id]
+      return this.#list.get(Number(id))
     }
     get #readwrite(): IDBObjectStore {
       return this.#objectStore("readwrite");
@@ -60,21 +63,29 @@ namespace DB {
           console.log(`${this.#name} ${id} updated`)
         };
     }
-    async loadList() {
+    loadList(): Promise<void> {
       console.log(`${this.#name}s load list started`)
-      this.#read.getAll().onsuccess = e => {
+      return new Promise<void>((resolve, reject) => {
+        
+      this.#read.getAll().onsuccess = async e => {
         const data: any[] = (e.target as any).result;
+        let list: Array<Promise<void>> = []
         data.forEach((p: any) => {
-          this.T.newFromDb(p);
-        })
+          list.push(this.T.newFromDb(p).inited);
+        });
+        for await (const element of list) {
+          
+        }
+        resolve()
       }
+      })
     }
-    async delete(id) {
+    async delete(id: number) {
       console.log(`${this.get(id)} delete started`);
       this.#readwrite
         .delete(id)
         .onsuccess = () => {
-          this.#list[id] = undefined;
+          this.#list.delete(id)
           console.log(`personage ${id} deleted`);
         };
     }
@@ -103,7 +114,9 @@ namespace DB {
     };
     Db.db = DB
     await personages.loadList();
-    await fighters.loadList();
+    setTimeout(() => {
+      fighters.loadList();
+    }, 1000);
   };
 }
 const personages = DB.personages;

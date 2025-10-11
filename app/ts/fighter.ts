@@ -39,6 +39,7 @@ class Fighter implements DB.Element{
   //   imgs: undefined,
   //   personageId: undefined
   // };
+  readonly inited: Promise<void>;
   constructor(data: fighterDb) {
     this.#db = {
       id: data.id,
@@ -50,7 +51,7 @@ class Fighter implements DB.Element{
       maxHp: data.maxHp,
       speed: data.speed,
       imgs: data.imgs,
-      personageId: data.personageId
+      personageId: Number(data.personageId)
     }
     this.#db.isMain = this.#db.isMain == "true" || this.#db.isMain;
     console.log("new fighter");
@@ -59,7 +60,7 @@ class Fighter implements DB.Element{
     if (fighters.get(data.id)) {
       throw new Error(`cannon create fighter with id: ${data.id}`);
     }
-    const personage = personages.get(data.personageId);
+    const personage = personages.get(this.#db.personageId);
     if (!personage) {
       throw new Error(`no personage with id ${data.personageId}`);
     }
@@ -71,6 +72,10 @@ class Fighter implements DB.Element{
     }
     Templator.addFighter(data.id, data.name, data.count, data.maxHp, data.imgs, personage.fightersList);
     fighters.add(this);
+    this.inited = this.#init();
+  }
+  async #init(){
+
   }
   static newFromDb(db: fighterDb){
     return new Fighter(db);
