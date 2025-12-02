@@ -85,9 +85,9 @@ class Personage implements DB.Element {
   get db() {
     return this.#db
   }
-  get fighters() {
-    return this.#fighters;
-  }
+  // get fighters() {
+  //   return this.#fighters;
+  // }
   addFighter(fighter) {
     this.#fighters.push(fighter);
   }

@@ -7,11 +7,14 @@ namespace Templator {
   let personagePromise: Promise<void>;
   let fighterImageTemplate: string;
   let fighterPromise: Promise<void>;
-  let fighterImagePromise: Promise<void>;
+  let fighterImagePromise: Promise<void>; 
+  let secondFighterIdInputTemplate: string;
+  let secondFighterIdInputPromise: Promise<void>;
   export function init() {
     personagePromise = personageInit();
     fighterPromise = fighterInit();
     fighterImagePromise = fighterImageInit();
+    secondFighterIdInputPromise = secondFighterIdInputInit()
   }
   async function personageInit() {
     let e = await fetch("templates/personageTemplate.mustache")
@@ -27,6 +30,11 @@ namespace Templator {
     let e = await fetch("templates/fighterImageTemplate.mustache");
     let text: string = await e.text();
     fighterImageTemplate = text;
+  }
+  async function secondFighterIdInputInit() {
+    let e = await fetch("templates/secondFighterIdInput.mustache");
+    let text: string = await e.text();
+    secondFighterIdInputTemplate = text;
   }
   export async function addPersonage(id: number, name: string, img: string) {
     console.log(`Templator.addPrsonage${id}  ${name}`)
@@ -57,18 +65,29 @@ namespace Templator {
     element.appendChild(e);
     e.outerHTML = render;
   }
-  export async function addfighterImage(data: {src: string, id: number}, element: HTMLElement, ondelete: (event: PointerEvent) => void) {
+  export async function addfighterImage(data: { src: string, id: number }, element: HTMLElement, ondelete: (event: PointerEvent) => void) {
     console.log(`Templator.addfighterImage(, src=...)`)
     await fighterImagePromise;
-    const reader: string = mustache.render(fighterImageTemplate,  data);
+    const reader: string = mustache.render(fighterImageTemplate, data);
     let e = document.createElement("div");
     element.appendChild(e);
     e.outerHTML = reader;
     let e2 = (_(`#fighterImage${data.id} .delete-button`) as HTMLButtonElement);
     e2.addEventListener("click", event => {
-      e2.parentElement.outerHTML= "";
+      e2.parentElement.outerHTML = "";
       ondelete(event);
     });
+  }
+    export async function addSecondFighterIdInput(data: {id:number, name: String}) {
+    console.log(`Templator.addSecondFighterIdInput ${data.name}`)
+    await secondFighterIdInputPromise;
+    const render = mustache.render(secondFighterIdInputTemplate, data);
+    let e = document.createElement("div");
+
+    _("#SecondFighterInput").appendChild(e);
+    e.outerHTML = render;
+
+
   }
 }
 

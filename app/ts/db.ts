@@ -10,11 +10,11 @@ namespace DB {
 
   export interface Element {
     id: number;
-    db: {id: number};
+    db: { id: number };
     inited: Promise<void>;
   }
   class Db<T extends Element> {
-    #list: Map<number, any> = new Map<number, T>();
+    #list: Map<number, any> = new MyMap<number, T>(Number);
     readonly #name: string;
     static db: IDBDatabase;
     T: { newFromDb: (db: any) => T };
@@ -25,20 +25,20 @@ namespace DB {
     }
     async add(element: T) {
       if (this.get(element.id)) {
-        await this.updateElement(element.id);
+        await this.updateElement(Number(element.id));
       } else {
         console.log(`start adding ${this.#name} ${element.id}`);
         let db = element.db;
         db.id = Number(element.id)
+        this.#list.set(element.id, element);
         this.#readwrite
           .put(db)
           .onsuccess = event => {
             console.log(`${this.#name} ${element.id} added`)
           };
-        this.#list.set(element.id, element);
       }
     }
-    get list(){
+    get list() {
       return this.#list;
     }
     get(id: number): T {
@@ -55,10 +55,11 @@ namespace DB {
         .objectStore(this.#name)
     }
     async updateElement(id: number) {
-      const element = this.get(id);
+      const element = this.get(id).db;
       console.log(`${this.#name} ${element} update started`);
+      element.id = Number(id)
       this.#readwrite
-        .put(element.db)
+        .put(element)
         .onsuccess = event => {
           console.log(`${this.#name} ${id} updated`)
         };
@@ -66,18 +67,24 @@ namespace DB {
     loadList(): Promise<void> {
       console.log(`${this.#name}s load list started`)
       return new Promise<void>((resolve, reject) => {
-        
-      this.#read.getAll().onsuccess = async e => {
-        const data: any[] = (e.target as any).result;
-        let list: Array<Promise<void>> = []
-        data.forEach((p: any) => {
-          list.push(this.T.newFromDb(p).inited);
-        });
-        for await (const element of list) {
-          
+
+        this.#read.getAll().onsuccess = async e => {
+          const data: any[] = (e.target as any).result;
+          let list: Array<Promise<void>> = []
+          let ids: number[] = []
+          data.forEach((p: any) => {
+            if (!(ids.includes(Number(p.id)))) {
+              ids.push(Number(p.id))
+              list.push(this.T.newFromDb(p).inited);
+            }else{
+              this.#readwrite.delete(Number(p.id))
+            }
+          });
+          for await (const element of list) {
+
+          }
+          resolve()
         }
-        resolve()
-      }
       })
     }
     async delete(id: number) {
@@ -107,7 +114,7 @@ namespace DB {
   request.onerror = event => {
     console.log((event as any).target.error?.message);
   };
-  request.onsuccess =async (event) => {
+  request.onsuccess = async (event) => {
     let DB = (event as any).target.result;
     DB.onerror = event => {
       console.error(`myDB error: ${event.target.error?.message}`)
@@ -116,7 +123,7 @@ namespace DB {
     await personages.loadList();
     setTimeout(() => {
       fighters.loadList();
-    }, 1000);
+    }, 1);
   };
 }
 const personages = DB.personages;

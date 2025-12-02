@@ -25,7 +25,7 @@ class fighterDb {
     public imgs: Array<string>,
     public personageId: number) { }
 }
-class Fighter implements DB.Element{
+class Fighter implements DB.Element {
   #db: fighterDb;
   // {
   //   id: undefined,
@@ -39,8 +39,16 @@ class Fighter implements DB.Element{
   //   imgs: undefined,
   //   personageId: undefined
   // };
+  #maxHpElement: HTMLSpanElement;
+  #nameElement: HTMLSpanElement;
+  #countElement: HTMLSpanElement;
+  #imgElement: HTMLImageElement;
   readonly inited: Promise<void>;
   constructor(data: fighterDb) {
+
+    this.inited = this.#init(data);
+  }
+  async #init(data: fighterDb) {
     this.#db = {
       id: data.id,
       name: data.name,
@@ -66,29 +74,41 @@ class Fighter implements DB.Element{
     }
     personage.addFighter(this);
 
+    await Templator.addFighter(data.id, data.name, data.count, data.maxHp, data.imgs, personage.fightersList);
+
+    this.#maxHpElement = _(`#fighter${this.id}-maxHp`);
+    this.#nameElement = _(`#fighter${this.id}-name`);
+    this.#imgElement = _(`#fighter${this.id}-img`);
+    this.#countElement = _(`#fighter${this.id}-count`);
+    fighters.add(this);
+    
+
     const secondFighter = fighters.get(data.secondFighterId);
     if (secondFighter) {
       secondFighter.secondFighterId = this.id
     }
-    Templator.addFighter(data.id, data.name, data.count, data.maxHp, data.imgs, personage.fightersList);
-    fighters.add(this);
-    this.inited = this.#init();
   }
-  async #init(){
-
-  }
-  static newFromDb(db: fighterDb){
+  static newFromDb(db: fighterDb) {
     return new Fighter(db);
   }
-  set secondFighterId(id) {
-    if (this.secondFighterId && id) {
-      this.secondFighter.secondFighterId = null;
+  set secondFighterId(id: number) {
+    id =Number(id)
+    if(!(id == this.id)){
+      let secondFighter = this.secondFighter
+      if (secondFighter) {
+        this.#db.secondFighterId=undefined
+        if (secondFighter.secondFighterId) {
+          secondFighter.secondFighterId = undefined
+        }
+      } if (id) {
+        let fght = fighters.get(id);
+        this.#db.secondFighterId = id;
+        if (!(fght.secondFighterId == this.id)) {
+          fght.secondFighterId = this.id;
+        }
+      }
+    fighters.updateElement(this.id);
     }
-    this.#db.secondFighterId = id;
-    if (this.secondFighter.secondFighterId != this.id) {
-      this.secondFighter.secondFighterId = this.id;
-    }
-
   }
   get secondFighter() {
     return fighters.get(this.#db.secondFighterId);
@@ -105,25 +125,40 @@ class Fighter implements DB.Element{
   set db(data: fighterDb) {
     console.log(`fighter update`)
     if (this.id != data.id) {
+      console.error("this.id != data.id");
       throw new Error(`${this.id} != ${data.id}`);
+    }
+    if (this.#db.personageId != data.personageId) {
+      console.error("this.#db.personageId != data.personageId");
+      throw new Error(`${this.#db.personageId} != ${data.personageId}`);
     }
 
     this.secondFighterId = data.secondFighterId;
     this.#db.id = data.id
-    this.#db.name = data.name
-    this.#db.count = data.count
-    this.#db.countOnStart = data.countOnStart
-    this.#db.isMain = data.isMain
-    this.#db.secondFighterId = data.secondFighterId
-    this.#db.maxHp = data.maxHp
-    this.#db.speed = data.speed
-    this.#db.imgs = data.imgs
-    this.#db.personageId = data.personageId
+
+    this.#nameElement.textContent = data.name;
+    this.#db.name = data.name;
+
+    this.#countElement.textContent = String(data.count);
+    this.#db.count = data.count;
+
+    this.#db.countOnStart = data.countOnStart;
+    this.#db.isMain = data.isMain;
+    this.#db.secondFighterId = data.secondFighterId;
+
+    this.#maxHpElement.textContent = String(data.maxHp);
+    this.#db.maxHp = data.maxHp;
+    this.#db.speed = data.speed;
+
+    this.#imgElement.src = data.imgs[0]
+    this.#db.imgs = data.imgs;
+
     this.#db.isMain = this.#db.isMain == "true" || this.#db.isMain;
-    
+
     console.log(this.#db)
     if (data.countOnStart > data.count) {
-      throw new Error(`countOnStrat > count`)
+      throw new Error(`countOnStrat > count`);
     }
+    fighters.updateElement(this.id);
   }
 }

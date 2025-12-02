@@ -15,6 +15,7 @@ console.log("figghterModal.js");
   const imgs = e["imgs"];
   const fileInput = e["imgsInput"];
   const fighterId = e["id"];
+  const secondFighterId = e["secondFighterId"]
   count.addEventListener("input", (event) => {
     const v = count.value
     countOnStart.max = v;
@@ -22,6 +23,7 @@ console.log("figghterModal.js");
     imgCount.max = v;
   });
   form.addEventListener("reset", event => {
+    _("#SecondFighterInput").innerHTML = '<option selected value="">нет</option>'
     imgList.innerHTML = "";
   });
   addImgButton.addEventListener("click", event => {
@@ -48,10 +50,26 @@ console.log("figghterModal.js");
       reader.readAsDataURL(file)
     }
   });
-  modal.addEventListener("show.bs.modal", event => {
+  modal.addEventListener("show.bs.modal", async event => {
     console.log("fighterModal.show.bs.modal");
+    
+
     const button = event.relatedTarget;
     const id = button.dataset.id;
+    var temp = undefined
+    try {
+      temp = e["personageId"];
+    } catch (error) {
+      
+    }
+    {
+    const personageId = temp
+    for (const [k, v] of fighters.list.entries()) {
+      if (v.db.id != id && v.db.personageId==(personageId || v.db.personageId)) {
+           await (Templator.addSecondFighterIdInput(v.db));
+      }
+    }
+    }
     if (id) {
       const fighter = fighters.get(id);
       if (!fighter) {
@@ -62,7 +80,7 @@ console.log("figghterModal.js");
         console.log(`data[${key}] = ${data[key]}`);
         try {
           const element = data[key];
-          e[key].value = element;
+          e[key].value = String(element);
           e[key].focus();
           e[key].blur();
           
@@ -107,7 +125,13 @@ console.log("figghterModal.js");
 
     console.log(o);
     // console.log(new Fighter(o));
-    const fighter = new Fighter(o);
+    const f = fighters.get(o.id)
+    if (f) {
+      f.db = o
+    } else {
+      const fighter = new Fighter(o);
+    }
+    
     bsModal.hide();
   });
   modal.addEventListener("hide.bs.modal", event => {
