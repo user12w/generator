@@ -14,7 +14,7 @@ class Personage implements DB.Element {
     img: undefined
   };
   inited: Promise<void>;
-  #fighters = [];
+  #fighters: Array<Fighter> = [];
   constructor(id: number, name: string, img: string) {
     this.inited = this.init(id, name, img)
   }
@@ -48,7 +48,7 @@ class Personage implements DB.Element {
           }, {
             title: "Подтверждения удаления",
             body: "Вы действительно хотите удалить персонажа?",
-            type: "danger",
+            type: confirmType.danger,
             button: "удалить"
           });
         });
@@ -75,9 +75,13 @@ class Personage implements DB.Element {
     personages.updateElement(this.id)
   }
   del() {
+    this.#fighters.forEach(element => {
+      element.del()
+    });
     this.#personageElement.remove();
     personages.delete(this.id);
-    this.#db = this.#nameElement = this.#personageElement = this.#imgElement = undefined;
+    this.#db = this.#nameElement = this.#personageElement = this.#imgElement = this.#fighters = undefined;
+
   }
   get id() {
     return this.#db.id;
@@ -93,5 +97,8 @@ class Personage implements DB.Element {
   }
   get fightersList() {
     return _(`#personage${this.id}-fighters-list`);
+  }
+  get fighters(){
+    return this.#fighters;
   }
 }

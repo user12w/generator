@@ -43,6 +43,7 @@ class Fighter implements DB.Element {
   #nameElement: HTMLSpanElement;
   #countElement: HTMLSpanElement;
   #imgElement: HTMLImageElement;
+  #fighterElement: HTMLElement;
   readonly inited: Promise<void>;
   constructor(data: fighterDb) {
 
@@ -76,12 +77,23 @@ class Fighter implements DB.Element {
 
     await Templator.addFighter(data.id, data.name, data.count, data.maxHp, data.imgs, personage.fightersList);
 
+    (_(`#fighter${this.id}-delete-button`) as HTMLButtonElement)
+    .addEventListener("click", e => {
+      confirmModal(()=>{
+        this.del()
+      }, {title: "Подтверждение удаления",
+        body: `delete fighter ${this.db.name}?`,
+        type: confirmType.danger,
+        button: "Удалить"
+      })
+    })
     this.#maxHpElement = _(`#fighter${this.id}-maxHp`);
     this.#nameElement = _(`#fighter${this.id}-name`);
     this.#imgElement = _(`#fighter${this.id}-img`);
     this.#countElement = _(`#fighter${this.id}-count`);
+    this.#fighterElement = _(`#fighter${this.id}`)
     fighters.add(this);
-    
+
 
     const secondFighter = fighters.get(data.secondFighterId);
     if (secondFighter) {
@@ -92,11 +104,11 @@ class Fighter implements DB.Element {
     return new Fighter(db);
   }
   set secondFighterId(id: number) {
-    id =Number(id)
-    if(!(id == this.id)){
+    id = Number(id)
+    if (!(id == this.id)) {
       let secondFighter = this.secondFighter
       if (secondFighter) {
-        this.#db.secondFighterId=undefined
+        this.#db.secondFighterId = undefined
         if (secondFighter.secondFighterId) {
           secondFighter.secondFighterId = undefined
         }
@@ -107,7 +119,7 @@ class Fighter implements DB.Element {
           fght.secondFighterId = this.id;
         }
       }
-    fighters.updateElement(this.id);
+      fighters.updateElement(this.id);
     }
   }
   get secondFighter() {
@@ -160,5 +172,17 @@ class Fighter implements DB.Element {
       throw new Error(`countOnStrat > count`);
     }
     fighters.updateElement(this.id);
+  }
+  del() {
+    this.#fighterElement.remove();
+    fighters.delete(this.id)
+    this.#countElement =
+      this.#db = this.#fighterElement =
+      this.#imgElement =
+      this.#maxHpElement =
+      this.#nameElement =
+      undefined;
+
+
   }
 }
