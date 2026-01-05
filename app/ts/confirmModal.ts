@@ -9,8 +9,8 @@ const confirmType2 = {
   "primary": "btn-primary"
 };
 enum confirmType{
- "danger"= "btn-danger",
-  "primary"= "btn-primary"
+ danger= "btn-danger",
+ primary= "btn-primary"
 }
 interface confirmModalData{
   title?: string;
@@ -26,7 +26,7 @@ function confirmModal(callBack: () => void, data?: confirmModalData) {
   confirmTypes.forEach(q => {
     button.classList.remove(q)
   });
-  button.classList.add(confirmType[data.type] || "btn-primary");
+  button.classList.add(data.type || "btn-primary");
   (button as any).onclick = callBack;
   button.textContent = data.button || "Подтвердить"
   bsConfirm.show();
