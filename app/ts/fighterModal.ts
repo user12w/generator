@@ -36,7 +36,9 @@ console.log("figghterModal.js");
     data[id] = src;
     imgs.value = JSON.stringify(data);
     let element = Templator.addfighterImage({src: src, id: id}, imgList, (event) => {
+      let data = JSON.parse(imgs.value);
       data[id] = undefined;
+      imgs.value = JSON.stringify(data);
       imgCount.value = Number(imgCount.value) - 1
     });
   }
@@ -89,9 +91,10 @@ console.log("figghterModal.js");
           
         }
       }
-      {
+      imgs.value = "{}";
+    {
         const imgs = data.imgs;
-        e.imgs.value = JSON.stringify(imgs);
+        // e.imgs.value = JSON.stringify(imgs);
         imgs.forEach(element => {
           addImg(element);
         });
