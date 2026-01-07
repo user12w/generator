@@ -1,12 +1,12 @@
 <div id="fighter{{id}}" class="list-group-item p-0">
   <div class="row m-0 p-0 align-middle ">
-    <img>
-    <div class="col-6 row">
+    <div class="col-auto row" style="height: 56px;">
       <img style="height: 56px; width: auto;" id="fighter{{id}}-img" src="{{img}}" alt="" class="btn-group-item d-inline bg-white rounded-2 p-0 d-inline col-auto">
-      <div class="align-middle my-auto col">
-      <span id="fighter{{id}}-name" class="py-2">{{name}}</span></div>
+     
     </div>
-    
+     <div class="align-middle my-auto col-4 row">
+      <span id="fighter{{id}}-name" class="py-2 col-12 text-truncate">{{name}}</span></div>
+
     <div style="margin-right: 0px;" class="col-auto ms-auto px-0 py-2 my-auto me-5">
       x<span id="fighter{{id}}-count">{{count}}</span> max Hp: <span id="fighter{{id}}-maxHp">
         {{maxHp}}
